@@ -1,10 +1,9 @@
 package main
 
-import (
-	loggerhead "loggerhead/internal"
-)
+import loggerhead "loggerhead/internal"
 
 func main() {
 	//loggerhead.ProcETW()
-	loggerhead.RegETW()
+	//loggerhead.TestETW()
+	loggerhead.NetConnETW()
 }
