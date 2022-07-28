@@ -5,5 +5,6 @@ import loggerhead "loggerhead/internal"
 func main() {
 	//loggerhead.ProcETW()
 	//loggerhead.TestETW()
-	loggerhead.NetConnETW()
+	//loggerhead.NetConnETW()
+	loggerhead.ETWSession("{22FB2CD6-0E7B-422B-A0C7-2FAD1FD0E716}")
 }
