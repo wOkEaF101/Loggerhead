@@ -11,32 +11,39 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-func ETWSession(GUID string) {
-	guid, _ := windows.GUIDFromString(GUID)
+type EventTrace struct {
+	GUID  string
+	Event uint16
+	PID   string
+}
+
+func ETWSession(et EventTrace) {
+	guid, _ := windows.GUIDFromString(et.GUID)
 	session, err := etw.NewSession(guid)
 	if err != nil {
 		log.Fatalf("Failed to create ETW session: %s", err)
 	}
 
-	cb := func(e *etw.Event) {
-		if e.Header.ID != 1 {
+	events := func(e *etw.Event) {
+		if e.Header.ID != et.Event {
 			return
 		}
+
 		if data, err := e.EventProperties(); err == nil {
 			if err != nil {
 				log.Fatalf(err.Error())
 			}
 			output, err := json.MarshalIndent(data, "", " ")
-			log.Printf("%s", output)
 			if err != nil {
 				log.Fatalf(err.Error())
 			}
+			log.Printf("%s", output)
 		}
 	}
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		if err := session.Process(cb); err != nil {
+		if err := session.Process(events); err != nil {
 			log.Printf("[ERR] Got error processing events: %s", err)
 		}
 		wg.Done()
